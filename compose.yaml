@@ -1,0 +1,17 @@
+services:
+  app:
+    build:
+      context: .
+      target: development
+    environment:
+      NODE_ENV: development
+      PORT: 44100
+    ports:
+      - "${APP_PORT:-44100}:44100"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    init: true
+
+volumes:
+  node_modules:
