@@ -1,0 +1,26 @@
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #1f2937;
+  background: #f3f4f6;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  width: min(48rem, calc(100% - 3rem));
+  margin: 4rem auto;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  background: white;
+  box-shadow: 0 0.5rem 2rem rgb(15 23 42 / 8%);
+}
+
+h1 {
+  margin-top: 0;
+}
+
+li + li {
+  margin-top: 0.75rem;
+}

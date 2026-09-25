@@ -1,14 +1,12 @@
 # GAC Technique
 
-Application TypeScript basée sur Remix 3, exécutable localement ou avec Docker.
-
-> Remix 3 est actuellement distribué en version release candidate. Le projet a été généré avec le CLI officiel `remix@next`.
+Application React et TypeScript construite avec Vite, exécutable localement ou avec Docker.
 
 ## Prérequis
 
 - Docker avec Docker Compose
 - `make` (optionnel, les commandes Docker équivalentes restent utilisables)
-- Node.js 24 uniquement pour une exécution sans Docker
+- Node.js 20 ou plus récent uniquement pour une exécution sans Docker
 
 ## Démarrage avec Docker
 
@@ -16,7 +14,7 @@ Application TypeScript basée sur Remix 3, exécutable localement ou avec Docker
 make dev
 ```
 
-L'application est alors disponible sur <http://localhost:44100>. Les fichiers du projet sont montés dans le conteneur et Remix recharge automatiquement le serveur et le navigateur lors d'une modification.
+L'application est alors disponible sur <http://localhost:44100>. Les fichiers du projet sont montés dans le conteneur et Vite recharge automatiquement le navigateur lors d'une modification.
 
 Pour afficher les logs :
 
@@ -48,9 +46,7 @@ APP_PORT=3000 make dev
 
 ```sh
 make help       # afficher toutes les commandes
-make test       # lancer les tests
 make typecheck  # vérifier les types TypeScript
-make doctor     # vérifier la configuration Remix
 make shell      # ouvrir un shell dans le conteneur
 make clean      # supprimer les conteneurs et le volume node_modules
 ```
@@ -68,16 +64,16 @@ L'image finale n'embarque que les dépendances de production et s'exécute avec 
 
 ```sh
 npm install
-npm run hmr
+npm run dev
 ```
 
-`npm run dev` surveille et redémarre uniquement le serveur. `npm run hmr` active en plus le rechargement à chaud côté navigateur. Remix 3 exécute directement les modules TypeScript et ne requiert pas de phase de compilation séparée pour ce projet.
+L'application est disponible sur <http://localhost:44100>.
 
 ## Structure
 
-- `app/routes.ts` définit les routes.
-- `app/router.ts` relie les routes, middlewares et contrôleurs.
-- `app/actions/` contient les contrôleurs et les vues.
-- `app/assets.ts` configure le pipeline des assets.
-- `server.ts` démarre le serveur HTTP.
-- `hmr.ts` démarre l'environnement de développement avec HMR.
+- `src/main.tsx` monte l'application React dans la page.
+- `src/App.tsx` contient le premier composant et la liste de questions.
+- `src/index.css` contient les styles globaux minimaux.
+- `vite.config.ts` configure Vite et son plugin React.
+
+Les anciens fichiers Remix sont conservés temporairement dans `app/` afin de ne pas perdre le travail précédent, mais ils ne font plus partie du build.
