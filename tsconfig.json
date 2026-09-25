@@ -1,19 +1,19 @@
 {
   "compilerOptions": {
     "strict": true,
-    "lib": ["ES2024", "DOM", "DOM.Iterable"],
-    "types": ["node", "remix/assets/types/hmr"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "ESNext",
-    "allowImportingTsExtensions": true,
-    "rewriteRelativeImportExtensions": true,
-    "verbatimModuleSyntax": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2022",
+    "allowImportingTsExtensions": false,
     "isolatedModules": true,
     "skipLibCheck": true,
     "jsx": "react-jsx",
-    "jsxImportSource": "remix/ui",
+    "useDefineForClassFields": true,
+    "resolveJsonModule": true,
     "noEmit": true
   },
-  "exclude": ["dist"]
+  "include": ["src", "vite.config.ts", "server"],
+  "exclude": ["dist", "app"]
 }

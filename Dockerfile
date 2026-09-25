@@ -7,21 +7,20 @@ COPY package.json package-lock.json ./
 FROM base AS development
 RUN npm ci
 COPY . .
-ENV NODE_ENV=development
 EXPOSE 44100
-CMD ["npm", "run", "hmr"]
+CMD ["npm", "run", "dev"]
 
-FROM base AS production-dependencies
-RUN npm ci --omit=dev
+FROM base AS build
+RUN npm ci
+COPY . .
+RUN npm run build
 
 FROM node:24-bookworm-slim AS production
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=44100
-COPY --from=production-dependencies /app/node_modules ./node_modules
-COPY package.json package-lock.json tsconfig.json server.ts ./
-COPY app ./app
-COPY public ./public
+RUN npm install --global serve@14
+COPY --from=build /app/dist ./dist
 USER node
 EXPOSE 44100
-CMD ["npm", "run", "start"]
+CMD ["serve", "-s", "dist", "-l", "44100"]

@@ -2,7 +2,7 @@
 
 COMPOSE := docker compose
 
-.PHONY: help install dev dev-logs stop down restart shell test typecheck doctor build start logs clean
+.PHONY: help install dev dev-logs stop down restart shell typecheck build start logs clean
 
 help: ## Afficher les commandes disponibles
 	@awk 'BEGIN {FS = ":.*## "; printf "Utilisation : make <commande>\n\n"} /^[a-zA-Z_-]+:.*## / {printf "  %-12s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -10,7 +10,7 @@ help: ## Afficher les commandes disponibles
 install: ## Installer les dépendances localement
 	npm install
 
-dev: ## Lancer Remix avec HMR dans Docker
+dev: ## Lancer React avec Vite dans Docker
 	$(COMPOSE) up --build -d
 
 dev-logs: ## Lancer Remix au premier plan avec les logs
@@ -28,14 +28,8 @@ restart: ## Redémarrer le service de développement
 shell: ## Ouvrir un shell dans le conteneur
 	$(COMPOSE) exec app sh
 
-test: ## Exécuter les tests dans Docker
-	$(COMPOSE) run --rm app npm test
-
 typecheck: ## Vérifier les types TypeScript dans Docker
 	$(COMPOSE) run --rm app npm run typecheck
-
-doctor: ## Diagnostiquer la configuration Remix dans Docker
-	$(COMPOSE) run --rm app npx remix doctor
 
 build: ## Construire l'image Docker de production
 	docker build --target production -t gac-technique:latest .
