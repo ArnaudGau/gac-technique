@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import type { Answers } from '../Questions/types'
+import type { Answers, TableAnswers } from '../Questions/types'
 type DsnUploadProps = {
         onAnswersReceived: (answers: Answers) => void
+        onTableAnswersReceived: ( tableAnswers: TableAnswers) => void
     }
 
 export function DsnUpload({
     onAnswersReceived,
+    onTableAnswersReceived
 }: DsnUploadProps) {
     const [file, setFile] = useState<File | null>(null)
     const [status, setStatus] = useState<UploadStatus>('idle')
@@ -19,6 +21,7 @@ export function DsnUpload({
         size: number
         entryCount: number
         answers: Answers
+        tableAnswers: TableAnswers
     }
 
     return (
@@ -51,6 +54,7 @@ export function DsnUpload({
                             await response.json() as DsnUploadResponse
 
                         onAnswersReceived(result.answers)
+                        onTableAnswersReceived(result.tableAnswers)
                         setStatus('success')
                     } catch {
                         setStatus('error')

@@ -8,7 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0 --port 44100",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx --test server/dsn/parseDsn.test.ts server/questions/parsing.test.ts server/answer/mapping.test.ts"
+    "test": "node --import tsx --test server/dsn/*.test.ts server/questions/*.test.ts server/answer/*.test.ts"
   },
   "engines": {
     "node": ">=20"

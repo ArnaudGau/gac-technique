@@ -1,9 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-
 import { parseQuestions } from './parsing'
-
-
 
 test('parse les questions et normalise leurs champs', () => {
     const content = [
@@ -110,7 +107,6 @@ test('rejette un type de question inconnu', () => {
     '',
   ].join(';'),
 ].join('\n')
-
     assert.throws(
         () => parseQuestions(content),
         /Type de question inconnu/,
