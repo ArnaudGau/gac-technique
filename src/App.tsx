@@ -1,13 +1,13 @@
 import { QuestionsList } from "./Questions/List"
 import { DsnUpload } from "./Dsn/Upload"
-import type { Answers } from './Questions/types'
 import { useEffect, useState } from 'react'
-import type { Question } from './Questions/types'
+import type { Answers, Question, TableAnswers } from './Questions/types'
 
 export function App() {
 
   const [answers, setAnswers] = useState<Answers>({})
   const [questions, setQuestions] = useState<Question[]>([])
+  const [tableAnswers, setTableAnswers] = useState<TableAnswers>({})
 
   useEffect(() => {
     async function loadQuestions() {
@@ -26,6 +26,15 @@ export function App() {
 
     void loadQuestions()
   }, [])
+
+  function handleTableAnswersReceived(
+    importedTableAnswers: TableAnswers,
+  ) {
+    setTableAnswers((previousTableAnswers) => ({
+      ...previousTableAnswers,
+      ...importedTableAnswers,
+    }))
+  }
 
   function handleAnswersReceived(
     importedAnswers: Answers,
@@ -50,11 +59,14 @@ export function App() {
       <QuestionsList
         questions={questions}
         answers={answers}
+        tableAnswers={tableAnswers}
         onAnswerChange={handleAnswerChange}
       />
       <DsnUpload
         onAnswersReceived={handleAnswersReceived}
+        onTableAnswersReceived={handleTableAnswersReceived}
       />
+  
     </main>
   )
 }

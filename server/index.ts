@@ -4,6 +4,9 @@ import { parseDsn } from './dsn/parseDsn'
 import { readFileSync } from 'node:fs'
 import { parseQuestions } from './questions/parsing'
 import { mapDsnToAnswers } from './answer/mapping'
+import { extractEmployees } from './dsn/extractEmployees'
+import { groupEmployees } from './answer/groupEmployees'
+import { mapEmployeeGroupsToTableAnswers} from './answer/tableMapping'
 
 const app = express()
 const port = 3000
@@ -39,6 +42,9 @@ app.post(
 
     try {
       const entries = parseDsn(content)
+      const employees = extractEmployees(entries)
+      const employeeGroups = groupEmployees(employees)
+      const tableAnswers = mapEmployeeGroupsToTableAnswers(employeeGroups)
       const answers = mapDsnToAnswers(entries)
 
       response.json({
@@ -46,7 +52,8 @@ app.post(
         size: request.file.size,
         entryCount: entries.length,
         preview: entries.slice(0, 5),
-        answers
+        answers,
+        tableAnswers,
       })
     } catch (error) {
       response.status(422).json({

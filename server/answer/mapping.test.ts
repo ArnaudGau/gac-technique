@@ -15,6 +15,8 @@ test('calcule le nombre d’employés', () => {
 
   assert.deepEqual(mapDsnToAnswers(entries), {
     'S1-6_02': '2',
+    'S1-6_14': 'Effectifs',
+    'S1-6_15': 'A la fin de la période',
   })
 })
 
