@@ -2,6 +2,7 @@ import { QuestionsList } from "./Questions/List"
 import { DsnUpload } from "./Dsn/Upload"
 import { useEffect, useState } from 'react'
 import type { Answers, Question, TableAnswers } from './Questions/types'
+import { WordExportButton } from './Export/WordExportButton'
 
 export function App() {
 
@@ -66,7 +67,9 @@ export function App() {
         onAnswersReceived={handleAnswersReceived}
         onTableAnswersReceived={handleTableAnswersReceived}
       />
-  
+      <WordExportButton questions={questions}
+        answers={answers}
+        tableAnswers={tableAnswers} />
     </main>
   )
 }
