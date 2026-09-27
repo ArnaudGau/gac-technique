@@ -1,19 +1,32 @@
 
-import { QuestionsListProps, QuestionListProps, QuestionNodeProps } from './types'
+import type { QuestionsListProps, QuestionListProps, QuestionNodeProps } from './types'
+
+const dimensionLabels: Record<string, string> = {
+  gender: 'Genre',
+  contractType: 'Type de contrat',
+}
+
+const editableTableQuestionIds = new Set(['K_719'])
 
 export function QuestionsList({
   questions,
   answers,
   tableAnswers,
   onAnswerChange,
+  onTableAnswerChange,
 }: QuestionsListProps) {
 
   return (
-    <section>
+    <section className="questions-card">
+      <div className="section-heading">
+        <p className="eyebrow">Données sociales</p>
+        <h2>Questions et réponses</h2>
+      </div>
       <List questions={questions}
         answers={answers}
         tableAnswers={tableAnswers}
-        onAnswerChange={onAnswerChange} />
+        onAnswerChange={onAnswerChange}
+        onTableAnswerChange={onTableAnswerChange} />
     </section>
   )
 }
@@ -23,7 +36,8 @@ function QuestionNode({
   questions,
   answers,
   tableAnswers,
-  onAnswerChange
+  onAnswerChange,
+  onTableAnswerChange,
 }: QuestionNodeProps) {
   const children = questions.filter(
     (candidate) =>
@@ -32,11 +46,6 @@ function QuestionNode({
   const hasInput = ['number', 'enum', 'text'].includes(
     question.content,
   )
-
-const dimensionLabels: Record<string, string> = {
-  gender: 'Genre',
-  contractType: 'Type de contrat',
-}
 
   const rows = tableAnswers[question.id] ?? []
   const dimensionKeys =
@@ -48,7 +57,7 @@ const dimensionLabels: Record<string, string> = {
 
   return (
 
-    <li>
+    <li className="question-node" data-content={question.content || 'group'}>
       {hasInput ? (
         <label htmlFor={question.id}>{question.label}</label>
       ) : (
@@ -93,6 +102,7 @@ const dimensionLabels: Record<string, string> = {
       )}
 
       {question.content === 'table' && rows.length > 0 && (
+        <div className="table-wrapper">
         <table>
           <thead>
             <tr>
@@ -121,13 +131,30 @@ const dimensionLabels: Record<string, string> = {
 
                 {children.map((child) => (
                   <td key={child.id}>
-                    {row.values[child.id] ?? ''}
+                    {editableTableQuestionIds.has(child.id) ? (
+                      <input
+                        aria-label={`${child.label} — ${row.id}`}
+                        type="number"
+                        value={row.values[child.id] ?? ''}
+                        onChange={(event) =>
+                          onTableAnswerChange(
+                            question.id,
+                            row.id,
+                            child.id,
+                            event.target.value,
+                          )
+                        }
+                      />
+                    ) : (
+                      row.values[child.id] ?? '—'
+                    )}
                   </td>
                 ))}
               </tr>
             ))}
           </tbody>
         </table>
+        </div>
       )}
 
       {children.length > 0 && rows.length === 0 && (
@@ -140,6 +167,7 @@ const dimensionLabels: Record<string, string> = {
               answers={answers}
               tableAnswers={tableAnswers}
               onAnswerChange={onAnswerChange}
+              onTableAnswerChange={onTableAnswerChange}
             />
           ))}
         </ul>
@@ -149,7 +177,13 @@ const dimensionLabels: Record<string, string> = {
 }
 
 
-function List({ questions, answers, tableAnswers, onAnswerChange }: QuestionListProps) {
+function List({
+  questions,
+  answers,
+  tableAnswers,
+  onAnswerChange,
+  onTableAnswerChange,
+}: QuestionListProps) {
 
   const rootQuestions = questions.filter(
     (question) => !question.relatedQuestionId,
@@ -157,9 +191,7 @@ function List({ questions, answers, tableAnswers, onAnswerChange }: QuestionList
 
   return (
     <>
-      <p>Questions racines : {rootQuestions.length}</p>
-
-      <ul>
+      <ul className="question-sections">
 
         {rootQuestions.map((question) => (
           <QuestionNode
@@ -169,6 +201,7 @@ function List({ questions, answers, tableAnswers, onAnswerChange }: QuestionList
             answers={answers}
             tableAnswers={tableAnswers}
             onAnswerChange={onAnswerChange}
+            onTableAnswerChange={onTableAnswerChange}
           />
         ))}
 
