@@ -1,9 +1,20 @@
 import { useState } from 'react'
 import type { Answers, TableAnswers } from '../Questions/types'
+
+type UploadStatus = 'idle' | 'loading' | 'success' | 'error'
+
 type DsnUploadProps = {
-        onAnswersReceived: (answers: Answers) => void
-        onTableAnswersReceived: ( tableAnswers: TableAnswers) => void
-    }
+    onAnswersReceived: (answers: Answers) => void
+    onTableAnswersReceived: (tableAnswers: TableAnswers) => void
+}
+
+type DsnUploadResponse = {
+    filename: string
+    size: number
+    entryCount: number
+    answers: Answers
+    tableAnswers: TableAnswers
+}
 
 export function DsnUpload({
     onAnswersReceived,
@@ -13,21 +24,15 @@ export function DsnUpload({
     const [status, setStatus] = useState<UploadStatus>('idle')
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-    type UploadStatus = 'idle' | 'loading' | 'success' | 'error'
-    
-
-    type DsnUploadResponse = {
-        filename: string
-        size: number
-        entryCount: number
-        answers: Answers
-        tableAnswers: TableAnswers
-    }
-
     return (
-        <section>
-            <h2>Importer une DSN</h2>
+        <section className="upload-card">
+            <div className="section-heading">
+                <p className="eyebrow">Étape 1</p>
+                <h2>Importer une DSN</h2>
+                <p>Sélectionnez un fichier au format TXT ou CSV (5 Mo maximum).</p>
+            </div>
             <form
+                className="upload-form"
                 onSubmit={async (event) => {
                     event.preventDefault()
 
@@ -47,7 +52,16 @@ export function DsnUpload({
                         })
 
                         if (!response.ok) {
-                            throw new Error("L'import a échoué")
+                            const errorResult = await response
+                                .json()
+                                .catch(() => null) as {
+                                    error?: string
+                                } | null
+
+                            throw new Error(
+                                errorResult?.error ??
+                                "L'import du fichier a échoué",
+                            )
                         }
 
                         const result =
@@ -56,9 +70,14 @@ export function DsnUpload({
                         onAnswersReceived(result.answers)
                         onTableAnswersReceived(result.tableAnswers)
                         setStatus('success')
-                    } catch {
+                    } catch(error) {
                         setStatus('error')
-                        setErrorMessage("Impossible d'importer le fichier")
+
+                        setErrorMessage(
+                            error instanceof Error
+                                ? error.message
+                                : "Impossible d'importer le fichier",
+                        )
                     }
                 }}
             >
@@ -75,13 +94,17 @@ export function DsnUpload({
                     {status === 'loading' ? 'Import en cours…' : 'Importer'}
                 </button>
             </form>
-            {file && <p>Fichier sélectionné : {file.name}</p>}
+            {file && <p className="file-name">Fichier sélectionné : <strong>{file.name}</strong></p>}
             {status === 'success' && (
-                <p>Le fichier a été importé avec succès.</p>
+                <p className="status-message status-message--success" role="status">
+                    Le fichier a été importé avec succès.
+                </p>
             )}
 
             {status === 'error' && (
-                <p role="alert">{errorMessage}</p>
+                <p className="status-message status-message--error" role="alert">
+                    {errorMessage}
+                </p>
             )}
         </section>
     )

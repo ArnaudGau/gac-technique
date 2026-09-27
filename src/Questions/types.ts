@@ -23,6 +23,7 @@ export type QuestionsListProps = {
   answers: Answers
   tableAnswers: TableAnswers
   onAnswerChange: (questionId: string, value: string) => void
+  onTableAnswerChange: TableAnswerChangeHandler
 }
 
 export type QuestionListProps = {
@@ -30,6 +31,7 @@ export type QuestionListProps = {
   answers: Answers
   tableAnswers: TableAnswers
   onAnswerChange: (questionId: string, value: string) => void
+  onTableAnswerChange: TableAnswerChangeHandler
 }
 
 export type QuestionNodeProps = {
@@ -38,4 +40,12 @@ export type QuestionNodeProps = {
   answers: Answers
   tableAnswers: TableAnswers
   onAnswerChange: (questionId: string, value: string) => void
+  onTableAnswerChange: TableAnswerChangeHandler
 }
+
+export type TableAnswerChangeHandler = (
+  tableQuestionId: string,
+  rowId: string,
+  questionId: string,
+  value: string,
+) => void

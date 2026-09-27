@@ -43,7 +43,7 @@ export function WordExportButton({
     }
 
     return (
-        <button type="button" onClick={handleExport}>
+        <button className="export-button" type="button" onClick={handleExport}>
             Exporter au format Word
         </button>
     )
